@@ -99,8 +99,12 @@ defs = dg.Definitions(
     jobs=[daily_rates_job, monthly_rates_job],
     schedules=[
         # Materializes the previous day's partition every day at 06:00 UTC.
-        dg.build_schedule_from_partitioned_job(daily_rates_job, hour_of_day=6),
-        dg.ScheduleDefinition(job=monthly_rates_job, cron_schedule="30 6 * * *"),
+        dg.build_schedule_from_partitioned_job(
+            daily_rates_job, hour_of_day=6, default_status=dg.DefaultScheduleStatus.RUNNING
+        ),
+        dg.ScheduleDefinition(
+            job=monthly_rates_job, cron_schedule="30 6 * * *", default_status=dg.DefaultScheduleStatus.RUNNING
+        ),
     ],
     resources={"warehouse": Warehouse(url=dg.EnvVar("WAREHOUSE_URL"))},
 )
